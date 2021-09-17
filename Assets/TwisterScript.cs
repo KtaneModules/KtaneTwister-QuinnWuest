@@ -170,21 +170,23 @@ public class TwisterScript : MonoBehaviour
     {
         return delegate
         {
-            //Debug.LogFormat("{0} {1}", color, row);
-            for (int c = 0; c < 4; c++)
-                for (int d = 0; d < 6; d++)
-                    if (_answers[c][d] == _currentBodyPart && (c != color || d != row))
-                        _answers[c][d] = null;
-            if (_answers[color][row] == null)
+            if (!_moduleSolved)
             {
-                MatBodyParts[(int)(_currentBodyPart)].SetActive(true);
-                MatBodyParts[(int)(_currentBodyPart)].transform.localPosition = new Vector3(xPos[color], MatBodyParts[(int)(_currentBodyPart)].transform.localPosition.y, zPos[row]);
-                _answers[color][row] = _currentBodyPart;
-            }
-            else
-            {
-                MatBodyParts[(int)(_answers[color][row].Value)].SetActive(false);
-                _answers[color][row] = null;
+                for (int c = 0; c < 4; c++)
+                    for (int d = 0; d < 6; d++)
+                        if (_answers[c][d] == _currentBodyPart && (c != color || d != row))
+                            _answers[c][d] = null;
+                if (_answers[color][row] == null)
+                {
+                    MatBodyParts[(int)(_currentBodyPart)].SetActive(true);
+                    MatBodyParts[(int)(_currentBodyPart)].transform.localPosition = new Vector3(xPos[color], MatBodyParts[(int)(_currentBodyPart)].transform.localPosition.y, zPos[row]);
+                    _answers[color][row] = _currentBodyPart;
+                }
+                else
+                {
+                    MatBodyParts[(int)(_answers[color][row].Value)].SetActive(false);
+                    _answers[color][row] = null;
+                }
             }
             return false;
         };
@@ -192,26 +194,35 @@ public class TwisterScript : MonoBehaviour
 
     private bool BodyPartPickerAction()
     {
-        _bodyPickerPlayer = (_bodyPickerPlayer + 1) % 2;
-        _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
-        for (int bp = 0; bp < BodyPickerParts.Length; bp++)
-            BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        if (!_moduleSolved)
+        {
+            _bodyPickerPlayer = (_bodyPickerPlayer + 1) % 2;
+            _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
+            for (int bp = 0; bp < BodyPickerParts.Length; bp++)
+                BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        }
         return false;
     }
     private bool BodyPartPickerUp()
     {
-        _bodyPickerIndex = (_bodyPickerIndex + 1) % 4;
-        _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
-        for (int bp = 0; bp < BodyPickerParts.Length; bp++)
-            BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        if (!_moduleSolved)
+        {
+            _bodyPickerIndex = (_bodyPickerIndex + 1) % 4;
+            _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
+            for (int bp = 0; bp < BodyPickerParts.Length; bp++)
+                BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        }
         return false;
     }
     private bool BodyPartPickerDown()
     {
-        _bodyPickerIndex = (_bodyPickerIndex + 3) % 4;
-        _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
-        for (int bp = 0; bp < BodyPickerParts.Length; bp++)
-            BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        if (!_moduleSolved)
+        {
+            _bodyPickerIndex = (_bodyPickerIndex + 3) % 4;
+            _currentBodyPart = (BodyParts)(_bodyPickerIndex + _bodyPickerPlayer * 4);
+            for (int bp = 0; bp < BodyPickerParts.Length; bp++)
+                BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex + _bodyPickerPlayer * 4);
+        }
         return false;
     }
 
