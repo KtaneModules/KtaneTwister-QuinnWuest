@@ -3967,7 +3967,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1019970286234722}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
-  m_LocalPosition: {x: 0.08, y: 0.0001, z: 0.03}
+  m_LocalPosition: {x: 0.08, y: 0.0002, z: 0.03}
   m_LocalScale: {x: 0.1, y: 0.00029999999, z: 0.1}
   m_Children:
   - {fileID: 4836677292840176}
@@ -4305,7 +4305,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1583646197957358}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.08, y: 0.0001, z: -0.03}
+  m_LocalPosition: {x: 0.08, y: 0.0002, z: -0.03}
   m_LocalScale: {x: 0.1, y: 0.00029999999, z: 0.1}
   m_Children:
   - {fileID: 4044882155545700}
@@ -10628,7 +10628,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114032326638708060
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -10942,7 +10942,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114142660716143814
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11150,7 +11150,8 @@ MonoBehaviour:
   IsPassThrough: 0
   ChildRowLength: 0
   Highlight: {fileID: 114166822074542802}
-  SelectableColliders: []
+  SelectableColliders:
+  - {fileID: 135797763363602076}
   DefaultSelectableIndex: 0
   AllowSelectionWrapX: 0
   AllowSelectionWrapY: 0
@@ -11194,7 +11195,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114205172846470216
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11282,7 +11283,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114222271726518576
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11331,7 +11332,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114256691289089504
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11348,7 +11349,8 @@ MonoBehaviour:
   IsPassThrough: 0
   ChildRowLength: 0
   Highlight: {fileID: 114527932548411798}
-  SelectableColliders: []
+  SelectableColliders:
+  - {fileID: 135650937290528612}
   DefaultSelectableIndex: 0
   AllowSelectionWrapX: 0
   AllowSelectionWrapY: 0
@@ -11467,7 +11469,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114298829325489030
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11480,7 +11482,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114302217078105472
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -11711,7 +11713,7 @@ MonoBehaviour:
   - {fileID: 114394591628380966}
   - {fileID: 114835022234981684}
   IsPassThrough: 0
-  ChildRowLength: 1
+  ChildRowLength: 5
   Highlight: {fileID: 114028975152173438}
   SelectableColliders: []
   DefaultSelectableIndex: 0
@@ -12507,7 +12509,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114688974453314782
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12559,7 +12561,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114712562489446146
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12583,7 +12585,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114718762436383592
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12596,7 +12598,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114719651762163930
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12622,7 +12624,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114734221508318052
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -12730,7 +12732,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114758175623779656
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13014,7 +13016,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114886063016411370
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13118,7 +13120,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114943002952986796
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13217,7 +13219,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ShaderNames:
-  - Standard
+  - KT/Mobile/DiffuseTint
 --- !u!114 &114963758558302726
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -13526,7 +13528,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.15
-  m_Center: {x: 0, y: 0.0000038146973, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135650947488526858
 SphereCollider:
   m_ObjectHideFlags: 1
@@ -13634,7 +13636,7 @@ SphereCollider:
   m_Enabled: 1
   serializedVersion: 2
   m_Radius: 0.15
-  m_Center: {x: 0, y: 0.0000038146973, z: 0}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!135 &135949985959687592
 SphereCollider:
   m_ObjectHideFlags: 1

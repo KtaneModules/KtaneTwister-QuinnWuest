@@ -155,8 +155,9 @@ public class TwisterScript : MonoBehaviour
             _dots[randSpin % 4][index] = bodyPart;
             _spins.Add(randSpin);
             //Debug.LogFormat("Spin {0}: {1}", stageIx, _spins[stageIx]);
-            Debug.LogFormat("[Twister #{0}] Placement #{1} is a {2} at {3} dot #{4} for player {5}",
-                _moduleId, stageIx, bodyPart,
+            Debug.LogFormat("[Twister #{0}] Placement #{1} is a {2} at {3} dot #{4} for Player {5}",
+                _moduleId, stageIx,
+                (int)bodyPart % 4 == 0 ? "left hand" : (int)bodyPart % 4 == 1 ? "right hand" : (int)bodyPart % 4 == 2 ? "right foot" : "left foot",
                 randSpin % 4 == 0 ? "green" : randSpin % 4 == 1 ? "yellow" : randSpin % 4 == 2 ? "blue" : "red",
                 index + 1, (stageIx % 2) + 1);
             stageIx++;
