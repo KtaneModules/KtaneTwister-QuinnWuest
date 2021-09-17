@@ -337,8 +337,9 @@ public class TwisterScript : MonoBehaviour
                 elapsedInit += Time.deltaTime;
             }
             Hand.transform.localEulerAngles = new Vector3(0f, _currentAngle - 22.5f, 0f);
-            var duration = 5f;
+            var duration = 5.5f;
             var elapsed = 0f;
+            Audio.PlaySoundAtTransform("WheelSpin", transform);
             while (elapsed < duration)
             {
                 Hand.transform.localEulerAngles = new Vector3(0f, Easing.OutQuad(elapsed, _currentAngle - 22.5f, 3600f + (_spins[_currentStage] * 22.5f), duration), 0f);
