@@ -267,7 +267,6 @@ public class TwisterScript : MonoBehaviour
             for (int d = 0; d < 6; d++)
                 if (_answers[c][d] != _dots[c][d])
                     correctAnswer = false;
-        Debug.LogFormat("{0}", correctAnswer ? "correct" : "wrong");
         if (correctAnswer)
         {
             Module.HandlePass();
