@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections;
+﻿using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.RegularExpressions;
+using KModkit;
 using UnityEngine;
 using Rnd = UnityEngine.Random;
-using KModkit;
 
 public class TwisterScript : MonoBehaviour
 {
@@ -154,7 +154,6 @@ public class TwisterScript : MonoBehaviour
             var index = availableDots[digit % availableDots.Length];
             _dots[randSpin % 4][index] = bodyPart;
             _spins.Add(randSpin);
-            //Debug.LogFormat("Spin {0}: {1}", stageIx, _spins[stageIx]);
             Debug.LogFormat("[Twister #{0}] Placement #{1} is a {2} at {3} dot #{4} for Player {5}",
                 _moduleId, stageIx,
                 (int)bodyPart % 4 == 0 ? "left hand" : (int)bodyPart % 4 == 1 ? "right hand" : (int)bodyPart % 4 == 2 ? "right foot" : "left foot",
@@ -382,6 +381,94 @@ public class TwisterScript : MonoBehaviour
         {
             for (int i = 0; i < QueueBulbs.Length; i++)
                 QueueBulbs[i].GetComponent<MeshRenderer>().material = BulbOff;
+        }
+    }
+
+#pragma warning disable 414
+    private string TwitchHelpMessage = "!{0} go [clicks the wheel] | !{0} toggle [switch between wheel and mat for stage recovery] | !{0} p1 left foot/p1lf [select a body part] | !{0} green 1 [place body part on a circle] | !{0} p1lf g 1 [select a body part and place it] | !{0} submit";
+#pragma warning restore 414
+
+    IEnumerator ProcessTwitchCommand(string command)
+    {
+        Match m;
+        if (Regex.IsMatch(command, @"^\s*(go|click|run|spin|activate)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (MatParent.activeSelf)
+            {
+                yield return "sendtochaterror You can’t spin the wheel if it’s not visible. To enter stage recovery, use toggle.";
+                yield break;
+            }
+            yield return null;
+            while (_isSpinning)
+                yield return null;
+            yield return new[] { SpinnerSelectable };
+            yield break;
+        }
+
+        if (Regex.IsMatch(command, @"^\s*toggle\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (_isSpinning)
+            {
+                yield return "sendtochaterror Wait for the wheel to finish spinning first!";
+                yield break;
+            }
+            if (!MatParent.activeSelf && !_inStageRecovery)
+            {
+                yield return "sendtochaterror Solve all the modules and/or spin the wheel first!";
+                yield break;
+            }
+
+            yield return null;
+            if (_inStageRecovery)
+                yield return new[] { SpinnerMatSel };
+            else
+            {
+                yield return MatSpinnerSel;
+                yield return new WaitForSeconds(2.5f);
+                yield return MatSpinnerSel;
+            }
+            yield break;
+        }
+
+        if ((m = Regex.Match(command, @"^\s*(?<bp>p(?:layer)?\s*(?<p>[12])\s*(?:(?<l>l|left)|r|right)\s*(?:(?<f>f|foot)|h|hand))?\s*(?<circle>(?:(?<g>g|green)|(?<y>y|yellow)|(?<b>b|blue)|r|red)\s*(?<ix>[1-6]))?\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)).Success && (m.Groups["bp"].Success || m.Groups["circle"].Success))
+        {
+            if (!MatParent.activeSelf && !_inStageRecovery)
+            {
+                yield return "sendtochaterror Solve all the modules and/or spin the wheel first!";
+                yield break;
+            }
+            yield return null;
+            if (m.Groups["bp"].Success)
+            {
+                var player = m.Groups["p"].Value[0] - '1';
+                var left = m.Groups["l"].Success;
+                var foot = m.Groups["f"].Success;
+                var bodypart = (BodyParts) ((left ? foot ? BodyParts.LeftFoot1 : BodyParts.LeftHand1 : foot ? BodyParts.RightFoot1 : BodyParts.RightHand1) + 4 * player);
+                if ((int) _currentBodyPart / 4 != player)
+                    yield return new[] { BodyPartPickerSel };
+                while (_currentBodyPart != bodypart)
+                    yield return new[] { BodyPartPickerDownSel };
+            }
+
+            if (m.Groups["circle"].Success)
+            {
+                var color = m.Groups["g"].Success ? 0 : m.Groups["y"].Success ? 1 : m.Groups["b"].Success ? 2 : 3;
+                var ix = m.Groups["ix"].Value[0] - '1';
+                yield return new[] { DotSelectables[ix + color * 6] };
+            }
+            yield break;
+        }
+
+        if (Regex.IsMatch(command, @"^\s*submit\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant))
+        {
+            if (!MatParent.activeSelf && !_inStageRecovery)
+            {
+                yield return "sendtochaterror Solve all the modules and/or spin the wheel first!";
+                yield break;
+            }
+            yield return null;
+            yield return new[] { MatSpinnerSel };
+            yield break;
         }
     }
 }
