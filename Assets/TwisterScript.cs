@@ -96,11 +96,13 @@ public class TwisterScript : MonoBehaviour
                 "42",
                 "501",
                 "A>N<D",
+                "Bamboozling Time Keeper",
                 "Black Arrows",
                 "Brainf---",
                 "The Board Walk",
                 "Busy Beaver",
                 "Don't Touch Anything",
+                "Doomsday Button",
                 "Duck Konundrum",
                 "Floor Lights",
                 "Forget Any Color",
@@ -120,8 +122,10 @@ public class TwisterScript : MonoBehaviour
                 "Keypad Directionality",
                 "Kugelblitz",
                 "Multitask",
+                "OmegaDestroyer",
                 "OmegaForget",
                 "Organization",
+                "Password Destroyer",
                 "Purgatory",
                 "RPS Judging",
                 "Security Council",
@@ -130,13 +134,17 @@ public class TwisterScript : MonoBehaviour
                 "Simon's Stages",
                 "Souvenir",
                 "Tallordered Keys",
+                "The Time Keeper",
+                "Timing is Everything",
                 "The Troll",
+                "Turn the Key",
                 "The Twin",
                 "Twister",
                 "Übermodule",
                 "Ultimate Custom Night",
                 "The Very Annoying Button",
-                "Whiteout"
+                "Whiteout",
+                "Zener Cards"
             });
         _stageCount = BombInfo.GetSolvableModuleNames().Count(a => !ignoredModules.Contains(a));
         for (int stageIx = 0; stageIx <= _stageCount;)
@@ -250,12 +258,13 @@ public class TwisterScript : MonoBehaviour
     {
         if (_currentStage == _stageCount && !_isSpinning)
         {
+            _inStageRecovery = false;
             _hasStruck = false;
             SpinnerParent.SetActive(false);
             MatParent.SetActive(true);
             //MatSpinner.SetActive(false);
             for (int bp = 0; bp < BodyPickerParts.Length; bp++)
-                BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex);
+                BodyPickerParts[bp].SetActive(bp == (int)_currentBodyPart);
         }
         else if (!_isSpinning && _currentStage < _curSolved)
         {
@@ -298,7 +307,7 @@ public class TwisterScript : MonoBehaviour
         SpinnerParent.SetActive(false);
         MatParent.SetActive(true);
         for (int bp = 0; bp < BodyPickerParts.Length; bp++)
-            BodyPickerParts[bp].SetActive(bp == _bodyPickerIndex);
+            BodyPickerParts[bp].SetActive(bp == (int)_currentBodyPart);
         return false;
     }
 
@@ -415,6 +424,11 @@ public class TwisterScript : MonoBehaviour
             if (!MatParent.activeSelf && !_inStageRecovery)
             {
                 yield return "sendtochaterror Solve all the modules and/or spin the wheel first!";
+                yield break;
+            }
+            if (!_hasStruck)
+            {
+                yield return "sendtochaterror You can't toggle to the spinner if you haven't submitted anything!";
                 yield break;
             }
 

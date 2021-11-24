@@ -14,9 +14,9 @@ MonoBehaviour:
   id: TwisterModule
   title: Twister
   author: Quinn Wuest
-  description: 'Twister? I hardly know her.
+  description: 'The classic children''s floor game with an explosive twist.
 
     Made by Quinn Wuest'
   version: 1.0
   outputFolder: build
-  previewImage: {fileID: 2800000, guid: bd5c1f4881f57d54481b44e4c8a7779a, type: 3}
+  previewImage: {fileID: 2800000, guid: c553bf7122b60f243a2b6e847f758369, type: 3}
