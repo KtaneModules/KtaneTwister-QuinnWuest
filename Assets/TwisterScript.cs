@@ -169,6 +169,7 @@ public class TwisterScript : MonoBehaviour
                 index + 1, (stageIx % 2) + 1);
             stageIx++;
         }
+        Debug.LogFormat("[Twister #{0}] All stages have been completed.", _moduleId);
         _currentAngle = _spins[0] * 22.5f;
         Hand.transform.localEulerAngles = new Vector3(0f, _currentAngle, 0f);
     }
