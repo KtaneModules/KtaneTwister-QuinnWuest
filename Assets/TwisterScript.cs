@@ -25,6 +25,7 @@ public class TwisterScript : MonoBehaviour
     public Material BulbOff, QueueOn, StageOn;
     public GameObject[] BodyPickerParts;
     public GameObject[] MatBodyParts;
+    public GameObject QueueBigBulb, StageBigBulb;
 
     private int _moduleId;
     private static int _moduleIdCounter = 1;
@@ -263,7 +264,6 @@ public class TwisterScript : MonoBehaviour
             _hasStruck = false;
             SpinnerParent.SetActive(false);
             MatParent.SetActive(true);
-            //MatSpinner.SetActive(false);
             for (int bp = 0; bp < BodyPickerParts.Length; bp++)
                 BodyPickerParts[bp].SetActive(bp == (int)_currentBodyPart);
         }
@@ -272,6 +272,7 @@ public class TwisterScript : MonoBehaviour
             StartCoroutine(SpinHand());
             for (int i = 0; i < StageBulbs.Length; i++)
                 StageBulbs[i].GetComponent<MeshRenderer>().material = (_currentStage & (1 << i)) != 0 ? StageOn : BulbOff;
+            StageBigBulb.GetComponent<MeshRenderer>().material = (_currentStage > 1023) ? StageOn : BulbOff;
         }
         else if (!_isSpinning)
         {
@@ -386,6 +387,7 @@ public class TwisterScript : MonoBehaviour
         {
             for (int i = 0; i < QueueBulbs.Length; i++)
                 QueueBulbs[i].GetComponent<MeshRenderer>().material = (_queueCount & (1 << i)) != 0 ? QueueOn : BulbOff;
+            QueueBigBulb.GetComponent<MeshRenderer>().material = (_queueCount > 63) ? QueueOn : BulbOff;
         }
         else
         {
