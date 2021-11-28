@@ -1,8 +1,8 @@
-﻿using System.Collections;
+﻿using KModkit;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-using KModkit;
 using UnityEngine;
 using Rnd = UnityEngine.Random;
 
@@ -460,8 +460,8 @@ public class TwisterScript : MonoBehaviour
                 var player = m.Groups["p"].Value[0] - '1';
                 var left = m.Groups["l"].Success;
                 var foot = m.Groups["f"].Success;
-                var bodypart = (BodyParts) ((left ? foot ? BodyParts.LeftFoot1 : BodyParts.LeftHand1 : foot ? BodyParts.RightFoot1 : BodyParts.RightHand1) + 4 * player);
-                if ((int) _currentBodyPart / 4 != player)
+                var bodypart = (BodyParts)((left ? foot ? BodyParts.LeftFoot1 : BodyParts.LeftHand1 : foot ? BodyParts.RightFoot1 : BodyParts.RightHand1) + 4 * player);
+                if ((int)_currentBodyPart / 4 != player)
                     yield return new[] { BodyPartPickerSel };
                 while (_currentBodyPart != bodypart)
                     yield return new[] { BodyPartPickerDownSel };
@@ -487,5 +487,86 @@ public class TwisterScript : MonoBehaviour
             yield return new[] { MatSpinnerSel };
             yield break;
         }
+    }
+
+    private IEnumerator TwitchHandleForcedSolve()
+    {
+        // Spin the spinner
+        while (SpinnerParent.activeSelf)
+        {
+            if (_inStageRecovery)
+            {
+                SpinnerMatSel.OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            else if (!_isSpinning && (_queueCount != 0 || _currentStage == _stageCount))
+            {
+                SpinnerSelectable.OnInteract();
+                yield return new WaitForSeconds(0.1f);
+            }
+            yield return true;
+        }
+        // Place the things on the mat
+        for (int color = 0; color < 4; color++)
+        {
+            for (int row = 0; row < 6; row++)
+            {
+                if (_dots[color][row] == _answers[color][row])
+                    continue;
+                if (_dots[color][row] != null && _answers[color][row] == null)
+                {
+                    var bp = _dots[color][row];
+                    if ((int)_currentBodyPart / 4 != (int)bp / 4)
+                    {
+                        BodyPartPickerSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    while (_currentBodyPart != bp)
+                    {
+                        BodyPartPickerDownSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    DotSelectables[color * 6 + row].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    continue;
+                }
+                if (_answers[color][row] != null)
+                {
+                    var bp = _answers[color][row];
+                    if ((int)_currentBodyPart / 4 != (int)bp / 4)
+                    {
+                        BodyPartPickerSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    while (_currentBodyPart != bp)
+                    {
+                        BodyPartPickerDownSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    DotSelectables[color * 6 + row].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    if (_dots[color][row] == null)
+                        continue;
+                    bp = _dots[color][row];
+                    if ((int)_currentBodyPart / 4 != (int)bp / 4)
+                    {
+                        BodyPartPickerSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    while (_currentBodyPart != bp)
+                    {
+                        BodyPartPickerDownSel.OnInteract();
+                        yield return new WaitForSeconds(0.1f);
+                    }
+                    DotSelectables[color * 6 + row].OnInteract();
+                    yield return new WaitForSeconds(0.1f);
+                    continue;
+                }
+            }
+        }
+        MatSpinnerSel.OnInteract();
+        yield return new WaitForSeconds(0.1f);
+        MatSpinnerSel.OnInteractEnded();
+        yield return new WaitForSeconds(0.1f);
     }
 }
