@@ -360,8 +360,6 @@ MonoBehaviour:
   BombInfo: {fileID: 114915764181273088}
   Audio: {fileID: 114350262685015838}
   Button: {fileID: 114506170083005102}
-  Cylinder: {fileID: 1955647044735044}
-  SolveMat: {fileID: 2100000, guid: bcfd580fec30c3045af3868f8c399dea, type: 2}
 --- !u!114 &114506170083005102
 MonoBehaviour:
   m_ObjectHideFlags: 1

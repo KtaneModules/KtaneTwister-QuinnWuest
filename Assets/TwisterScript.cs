@@ -179,7 +179,6 @@ public class TwisterScript : MonoBehaviour
         _currentAngle = _spins[0] * 22.5f; // The angle for pointing to the first dot.
         Hand.transform.localEulerAngles = new Vector3(0f, _currentAngle, 0f); // Point the spinner to the first dot.
     }
-
     private KMSelectable.OnInteractHandler DotPress(KMSelectable dot, int color, int row) // The dot you pressed, the color, the row.
     {
         return delegate
@@ -205,9 +204,10 @@ public class TwisterScript : MonoBehaviour
             return false;
         };
     }
-
     private bool BodyPartPickerAction()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, BodyPartPickerSel.transform);
+        BodyPartPickerSel.AddInteractionPunch(0.5f);
         if (!_moduleSolved) // If the module is solved, don't do anything.
         {
             _bodyPickerPlayer = (_bodyPickerPlayer + 1) % 2; // Change the player of the body part picker to the other player.
@@ -219,6 +219,8 @@ public class TwisterScript : MonoBehaviour
     }
     private bool BodyPartPickerUp()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, BodyPartPickerUpSel.transform);
+        BodyPartPickerUpSel.AddInteractionPunch(0.5f);
         if (!_moduleSolved) // If the module is solved, don't do anything.
         {
             _bodyPickerIndex = (_bodyPickerIndex + 1) % 4; // Change the body part of the body part picker to one above it in the cycle. 
@@ -230,6 +232,8 @@ public class TwisterScript : MonoBehaviour
     }
     private bool BodyPartPickerDown()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, BodyPartPickerDownSel.transform);
+        BodyPartPickerDownSel.AddInteractionPunch(0.5f);
         if (!_moduleSolved) // If the module is solved, don't do anything.
         {
             _bodyPickerIndex = (_bodyPickerIndex + 3) % 4;  // Change the body part of the body part picker to one below it in the cycle. 
@@ -239,9 +243,10 @@ public class TwisterScript : MonoBehaviour
         }
         return false;
     }
-
     private bool MatSpinnerPress()
     {
+        Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.ButtonRelease, MatSpinnerSel.transform); // Play the button release sound (quiet press) when pressing the mat spinner.
+        MatSpinnerSel.AddInteractionPunch(0.5f); // Add an interaction punch when pressing.
         if (!_moduleSolved) // If the module is solved, don't do anything.
         {
             _hasBeenHeld = false; // Reset the _hasBeenHeld boolean.
@@ -260,7 +265,6 @@ public class TwisterScript : MonoBehaviour
                 SubmitAnswer(); // Submit the answer.
         }
     }
-
     private bool SpinnerAction()
     {
         if (_currentStage == _stageCount && !_isSpinning) // If all the spins have been spun, and the spin animation isn't playing...
@@ -296,8 +300,9 @@ public class TwisterScript : MonoBehaviour
                     correctAnswer = false; // Set this to false.
         if (correctAnswer) // If the dot configuration is correct...
         {
+            Audio.PlayGameSoundAtTransform(KMSoundOverride.SoundEffect.CorrectChime, transform); // Play the correct chime sound.
             Module.HandlePass(); // Solve the module.
-            _moduleSolved = true;
+            _moduleSolved = true; // Set this to true, so the user cannot interact with the module further.
             Debug.LogFormat("[Twister #{0}] You placed all the hands and feet in the correct positions. Module solved.", _moduleId);
         }
         else // Otherwise...
