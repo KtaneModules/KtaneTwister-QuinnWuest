@@ -22,11 +22,13 @@ public class TwisterScript : MonoBehaviour
     public GameObject MatSpinner; // MatSpinner -> Mat Parent, Spinner Selectable.
     public GameObject SpinnerMat; // SpinnerMat -> Spinner Parent, Mat Selectable.
     public GameObject[] QueueBulbs, StageBulbs; // QueueBulbs -> The green bulbs up top to show how many spins are left in the queue. StageBulbs -> The current stage.
+    public Light[] QueueLights, StageLights; // QueueLights -> The lights of the queue bulbs. StageLights -> The lights of the state bulbs.
     public GameObject SpinnerParent, MatParent; // The screen for the spinner/stages, the screen to submit the answer on the mat.
     public Material BulbOff, QueueOn, StageOn; // Black, Green, Yellow materials.
     public GameObject[] BodyPickerParts; // The body parts that are shown on the right of the mat, for deciding which body part you are placing.
     public GameObject[] MatBodyParts; // The body parts that appear/disappear when interacting with the dots on the mat.
     public GameObject QueueBigBulb, StageBigBulb; // The large bulbs on the top left and bottom left. QueueBigBulb turns on when there are at least 64 modules in the queue (2^6). The StageBigBulb turns on when there are at least 1024 modules in the queue (2^10).
+    public Light QueueBigLight, StageBigLight; // The lights on QueueBigBulb and StageBigBulb.
 
     private int _moduleId; // Module ID (for logging)
     private static int _moduleIdCounter = 1; // Module ID Counter (for logging)
@@ -68,7 +70,6 @@ public class TwisterScript : MonoBehaviour
     private void Start()
     {
         _moduleId = _moduleIdCounter++; // For Logging
-
         // START
         SpinnerSelectable.OnInteract += SpinnerAction;
         BodyPartPickerSel.OnInteract += BodyPartPickerAction;
@@ -80,10 +81,16 @@ public class TwisterScript : MonoBehaviour
         for (int i = 0; i < DotSelectables.Length; i++)
             DotSelectables[i].OnInteract += DotPress(DotSelectables[i], i / 6, i % 6);
         // END. Selectable press/release logic.
-
-        var SerialNumber = BombInfo.GetSerialNumber();
-        THIRD = SerialNumber[2] - '0';
-        SIXTH = SerialNumber[5] - '0';
+        THIRD = BombInfo.GetSerialNumber()[2] - '0';
+        SIXTH = BombInfo.GetSerialNumber()[5] - '0';
+        // Scale the light range based on the scale of the module. (Module gets smaller on larger bomb, but light range stays the same.)
+        float lightScale = transform.lossyScale.x;
+        foreach (var light in StageLights)
+            light.range *= lightScale;
+        foreach (var light in QueueLights)
+            light.range *= lightScale;
+        QueueBigLight.range *= lightScale;
+        StageBigLight.range *= lightScale;
         StartCoroutine(Init()); // Read below for more.
     }
 
@@ -97,61 +104,7 @@ public class TwisterScript : MonoBehaviour
             MatBodyParts[i].SetActive(false);
 
         if (ignoredModules == null) // Ignored modules.
-            ignoredModules = GetComponent<KMBossModule>().GetIgnoredModules("Twister", new string[] {
-                "14",
-                "42",
-                "501",
-                "A>N<D",
-                "Bamboozling Time Keeper",
-                "Black Arrows",
-                "Brainf---",
-                "The Board Walk",
-                "Busy Beaver",
-                "Don't Touch Anything",
-                "Doomsday Button",
-                "Duck Konundrum",
-                "Floor Lights",
-                "Forget Any Color",
-                "Forget Enigma",
-                "Forget Everything",
-                "Forget Infinity",
-                "Forget It Not",
-                "Forget Maze Not",
-                "Forget Me Later",
-                "Forget Me Not",
-                "Forget Perspective",
-                "Forget The Colors",
-                "Forget Them All",
-                "Forget This",
-                "Forget Us Not",
-                "Iconic",
-                "Keypad Directionality",
-                "Kugelblitz",
-                "Multitask",
-                "OmegaDestroyer",
-                "OmegaForget",
-                "Organization",
-                "Password Destroyer",
-                "Purgatory",
-                "RPS Judging",
-                "Security Council",
-                "Shoddy Chess",
-                "Simon Forgets",
-                "Simon's Stages",
-                "Souvenir",
-                "Tallordered Keys",
-                "The Time Keeper",
-                "Timing is Everything",
-                "The Troll",
-                "Turn the Key",
-                "The Twin",
-                "Twister",
-                "Übermodule",
-                "Ultimate Custom Night",
-                "The Very Annoying Button",
-                "Whiteout",
-                "Zener Cards"
-            });
+            ignoredModules = GetComponent<KMBossModule>().GetIgnoredModules("Twister", new string[] { "Twister" });
         _stageCount = BombInfo.GetSolvableModuleNames().Count(a => !ignoredModules.Contains(a)); // Stage count is equal to all of the solveable modules on the bomb, minus ignored modules.
         for (int stageIx = 0; stageIx <= _stageCount;) //stageIx++ is moved to below, in the case that the randomly chosen bodyPart is unavailable. (Read line 160)
         {
@@ -279,9 +232,13 @@ public class TwisterScript : MonoBehaviour
         else if (!_isSpinning && _currentStage < _curSolved) // If the animation is not playing, and the current stage is less than the number of currently solved modules...
         {
             StartCoroutine(SpinHand()); // Play the spinning hand animation.
-            for (int i = 0; i < StageBulbs.Length; i++) // For each of the stage bulbs...
+            for (int i = 0; i < StageBulbs.Length; i++)
+            { // For each of the stage bulbs...
                 StageBulbs[i].GetComponent<MeshRenderer>().material = (_currentStage & (1 << i)) != 0 ? StageOn : BulbOff; // Set them equal to the current stage in binary.
+                StageLights[i].enabled = (_currentStage & (1 << i)) != 0;
+            }
             StageBigBulb.GetComponent<MeshRenderer>().material = (_currentStage > 1023) ? StageOn : BulbOff; // If the current stage is at least 1024, turn this bulb on. (2^10)
+            StageBigLight.enabled = _currentStage > 1023;
         }
         else if (!_isSpinning) // If the animation is not playing, and you try to spin the spinner while there are no spins in the queue,
         {
@@ -336,7 +293,7 @@ public class TwisterScript : MonoBehaviour
         _inStageRecovery = true; // Yes, we are now in stage recovery.
     }
 
-    private IEnumerator SpinnerHold() 
+    private IEnumerator SpinnerHold()
     {
         int initialTime = (int)BombInfo.GetTime(); // Initial time.
         int currentTime; // Current time.
@@ -398,14 +355,21 @@ public class TwisterScript : MonoBehaviour
         _queueCount = _curSolved - _currentStage; // The current number of spins in the queue, or current number of solved modules minus current stage.
         if (!_inStageRecovery) // If not in stage recovery...
         {
-            for (int i = 0; i < QueueBulbs.Length; i++) // For each queue bulb...
+            for (int i = 0; i < QueueBulbs.Length; i++)
+            { // For each queue bulb...
                 QueueBulbs[i].GetComponent<MeshRenderer>().material = (_queueCount & (1 << i)) != 0 ? QueueOn : BulbOff; // Set the bulbs equal to the queue count in binary.
+                QueueLights[i].enabled = (_queueCount & (1 << i)) != 0; // Set the lights equal to the bulbs.
+            }
             QueueBigBulb.GetComponent<MeshRenderer>().material = (_queueCount > 63) ? QueueOn : BulbOff; // If the queue count is at least 64, turn on the big queue bulb (2^6).
+            QueueBigLight.enabled = _queueCount > 63;
         }
         else // Otherwise
         {
             for (int i = 0; i < QueueBulbs.Length; i++)
+            {
                 QueueBulbs[i].GetComponent<MeshRenderer>().material = BulbOff; // Turn off all the queue bulbs.
+                QueueLights[i].enabled = false; // TUrn off the lights.
+            }
         }
     }
 
@@ -511,7 +475,7 @@ public class TwisterScript : MonoBehaviour
             if (_inStageRecovery) // While in stage recovery...
             {
                 SpinnerMatSel.OnInteract(); // Press the spinner mat to go the mat.
-                yield return new WaitForSeconds(0.1f); 
+                yield return new WaitForSeconds(0.1f);
             }
             else if (!_isSpinning && (_queueCount != 0 || _currentStage == _stageCount)) // If the spinner is not spinning, and (the queue count is not equal to 0, or it's the final spin...)
             {
