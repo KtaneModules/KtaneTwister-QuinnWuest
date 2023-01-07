@@ -380,7 +380,7 @@ public class TwisterScript : MonoBehaviour
     IEnumerator ProcessTwitchCommand(string command)
     {
         Match m;
-        if (Regex.IsMatch(command, @"^\s*(go|click|run|spin|activate)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) // Command for spinning the spinner.
+        if (Regex.IsMatch(command, @"^\s*(go|click|run|spin|activate|spin\s+that\s+bitch)\s*$", RegexOptions.IgnoreCase | RegexOptions.CultureInvariant)) // Command for spinning the spinner.
         {
             if (MatParent.activeSelf) // If the mat is active (meaning no spinner)...
             {
@@ -467,7 +467,13 @@ public class TwisterScript : MonoBehaviour
         }
     }
 
-    private IEnumerator TwitchHandleForcedSolve()
+    // "Void" gets called first. Due to the length of the module's solving time, I've put this in a separate Coroutine.
+    private void TwitchHandleForcedSolve()
+    {
+        StartCoroutine(Autosolve());
+    }
+
+    private IEnumerator Autosolve()
     {
         // Spin the spinner
         while (SpinnerParent.activeSelf)
@@ -482,7 +488,7 @@ public class TwisterScript : MonoBehaviour
                 SpinnerSelectable.OnInteract(); // Spin the spinner.
                 yield return new WaitForSeconds(0.1f);
             }
-            yield return true; // The module will auto solve if this isn't running, as the method has been completed. Anti-failsafe...?
+            yield return null; // The module will auto solve if this isn't running, as the method has been completed. Anti-failsafe...?
         }
         // Place the things on the mat
         for (int color = 0; color < 4; color++) // For each color...
